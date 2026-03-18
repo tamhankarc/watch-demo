@@ -27,7 +27,7 @@ export function CustomerForm({
   customer: Customer;
   lockedSalesExecutiveId?: number;
 }) {
-  const [state, formAction, pending] = useActionState(saveCustomerAction, {});
+  const [state, formAction, pending] = useActionState(saveCustomerAction, { error: '' });
   const selectedExecutiveId = lockedSalesExecutiveId ?? customer?.salesExecutiveId ?? salesExecutives[0]?.id;
 
   return (

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { parseStockWorkbook } from '@/lib/excel/stock-upload';
+import { parseStockUpload } from '@/lib/excel/stock-upload';
 import { previewInventoryRows } from '@/lib/services/inventory-service';
 
 export async function POST(request: Request) {
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, message: 'File is required' }, { status: 400 });
     }
 
-    const rows = parseStockWorkbook(Buffer.from(await file.arrayBuffer()));
+    const rows = parseStockUpload(Buffer.from(await file.arrayBuffer()));
     const preview = await previewInventoryRows(rows);
 
     return NextResponse.json({

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export type AuditEventInput = {
   entityType: string;
@@ -17,7 +18,7 @@ export async function logAuditEvent(input: AuditEventInput) {
       action: input.action,
       actorUserId: input.actorUserId ?? null,
       summary: input.summary,
-      metadata: input.metadata ?? undefined,
+      metadata: input.metadata as Prisma.InputJsonValue | undefined,
     },
   });
 }

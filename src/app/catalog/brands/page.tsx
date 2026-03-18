@@ -11,7 +11,8 @@ export default async function BrandsPage() {
     orderBy: { name: 'asc' },
   });
 
-  const canManage = [RoleCode.ADMIN, RoleCode.MANAGER].includes(session.role);
+  const canManage =
+  session.role === RoleCode.ADMIN || session.role === RoleCode.MANAGER;
 
   return (
     <DashboardShell user={session} title="Brands">

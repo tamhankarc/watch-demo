@@ -5,7 +5,7 @@ import { loginAction } from '@/lib/actions';
 import { FormMessage } from '@/components/form-message';
 
 export function LoginForm() {
-  const [state, formAction, pending] = useActionState(loginAction, {});
+  const [state, formAction, pending] = useActionState(loginAction, { error: '' });
 
   return (
     <form action={formAction} className="form">

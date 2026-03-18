@@ -5,7 +5,7 @@ import { createBrandAction } from '@/lib/actions';
 import { FormMessage } from '@/components/form-message';
 
 export function BrandForm() {
-  const [state, formAction, pending] = useActionState(createBrandAction, {});
+  const [state, formAction, pending] = useActionState(createBrandAction, { error: '' });
 
   return (
     <form action={formAction} className="form">

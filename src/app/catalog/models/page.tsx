@@ -11,7 +11,8 @@ export default async function ModelsPage() {
     prisma.model.findMany({ include: { brand: true }, orderBy: [{ brand: { name: 'asc' } }, { name: 'asc' }] }),
   ]);
 
-  const canManage = [RoleCode.ADMIN, RoleCode.MANAGER].includes(session.role);
+  const canManage =
+  session.role === RoleCode.ADMIN || session.role === RoleCode.MANAGER;
 
   return (
     <DashboardShell user={session} title="Models">

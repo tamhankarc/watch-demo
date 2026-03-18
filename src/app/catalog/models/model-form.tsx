@@ -5,7 +5,7 @@ import { createModelAction } from '@/lib/actions';
 import { FormMessage } from '@/components/form-message';
 
 export function ModelForm({ brands }: { brands: { id: number; name: string }[] }) {
-  const [state, formAction, pending] = useActionState(createModelAction, {});
+  const [state, formAction, pending] = useActionState(createModelAction, { error: '' });
 
   return (
     <form action={formAction} className="form">
