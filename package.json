@@ -1,0 +1,42 @@
+{
+  "name": "polachecks-phase1-phase2-combined",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "catalog:sync": "tsx scripts/catalog-sync.ts",
+    "catalog:enrich": "tsx scripts/catalog-enrich.ts",
+    "allocations:expire": "tsx scripts/expire-allocations.ts",
+    "catalog:import-missing-refs": "tsx scripts/catalog-import-missing-brand-references.ts",
+    "catalog:enrich:target-brands": "tsx scripts/catalog-enrich-target-brands.ts",
+    "catalog:enrich:target-brands:queued": "tsx scripts/catalog-enrich-target-brands-queued.ts",
+    "notifications:refresh": "tsx scripts/notifications-refresh.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "jose": "^5.9.6",
+    "next": "15.2.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "prisma": "^6.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
