@@ -1,11 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
-import {
-  updateRequirementAction,
-  changeRequirementStatusAction,
-} from "@/actions/requirements";
-import RequirementForm from "@/components/requirements/requirement-form";
 import { notFound } from "next/navigation";
+import { DashboardShell } from "@/components/dashboard-shell";
 
 type Props = {
   params: Promise<{
@@ -14,133 +10,75 @@ type Props = {
 };
 
 export default async function RequirementDetailPage({ params }: Props) {
-  await requireAuth();
+  const session = await requireAuth();
 
   const { id } = await params;
-  const requirementId = Number(id);
-
-  if (Number.isNaN(requirementId)) {
-    notFound();
-  }
 
   const requirement = await prisma.requirement.findUnique({
-    where: { id: requirementId },
+    where: { id: Number(id) },
     include: {
       customer: true,
-      brand: true,
-      model: true,
-      watchReference: true,
+      salesExecutive: true,
     },
   });
 
-  if (!requirement) {
-    notFound();
-  }
-
-  const [customers, brands, models, references] = await Promise.all([
-    prisma.customer.findMany({
-      where: { isActive: true },
-      orderBy: [{ firstName: "asc" }],
-      select: { id: true, firstName: true, lastName: true },
-    }),
-    prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: [{ name: "asc" }],
-      select: { id: true, name: true },
-    }),
-    prisma.model.findMany({
-      where: { isActive: true },
-      orderBy: [{ name: "asc" }],
-      select: { id: true, name: true, brandId: true },
-    }),
-    prisma.watchReference.findMany({
-      where: { isActive: true },
-      orderBy: [{ referenceNumber: "asc" }],
-      take: 1000,
-      select: {
-        id: true,
-        referenceNumber: true,
-        brandId: true,
-        modelId: true,
-      },
-    }),
-  ]);
-
-  async function action(formData: FormData) {
-    "use server";
-    await updateRequirementAction(requirementId, formData);
-  }
+  if (!requirement) return notFound();
 
   return (
-    <div className="max-w-3xl space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          Edit Requirement #{requirement.id}
-        </h1>
-
-        <p className="text-sm text-gray-500">
-          Customer: {requirement.customer.firstName}{" "}
-          {requirement.customer.lastName}
-        </p>
-      </div>
-
-      <div className="rounded-xl border bg-white p-6">
-        <h2 className="text-lg font-semibold">Status</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Current status: <span className="font-medium">{requirement.status}</span>
-        </p>
-
-        <div className="mt-4 flex flex-wrap gap-3">
-          <form
-            action={async () => {
-              "use server";
-              await changeRequirementStatusAction(requirement.id, "WAITING");
-            }}
+    <DashboardShell user={session} title="Requirement Details">
+      <div className="container">
+        {/* 🔙 Back Button */}
+        <div style={{ marginBottom: 16 }}>
+          <a
+            href="/requirements"
+            className="button"
+            style={{ width: "fit-content" }}
           >
-            <button type="submit" className="rounded-md border px-4 py-2 text-sm">
-              Mark Waiting
-            </button>
-          </form>
+            ← Back to Requirements
+          </a>
+        </div>
 
-          <form
-            action={async () => {
-              "use server";
-              await changeRequirementStatusAction(requirement.id, "CANCELLED");
-            }}
-          >
-            <button type="submit" className="rounded-md border px-4 py-2 text-sm">
-              Mark Cancelled
-            </button>
-          </form>
+        {/* Header */}
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ marginBottom: 8 }}>
+            Requirement #{requirement.id}
+          </h1>
+          <p className="muted">View customer requirement details</p>
+        </div>
 
-          <form
-            action={async () => {
-              "use server";
-              await changeRequirementStatusAction(requirement.id, "SOLD");
-            }}
-          >
-            <button type="submit" className="rounded-md border px-4 py-2 text-sm">
-              Mark Sold
-            </button>
-          </form>
+        {/* Main Card */}
+        <div className="card" style={{ display: "grid", gap: 16 }}>
+          <div>
+            <strong>Customer:</strong>{" "}
+            {requirement.customer?.firstName}{" "}
+            {requirement.customer?.lastName}
+          </div>
+
+          <div>
+            <strong>Sales Executive:</strong>{" "}
+            {requirement.salesExecutive?.firstName}{" "}
+            {requirement.salesExecutive?.lastName}
+          </div>
+
+          {/* ✅ Status Badge */}
+          <div>
+            <strong>Status:</strong>{" "}
+            <span className="badge">{requirement.status}</span>
+          </div>
+
+          <div>
+            <strong>Notes:</strong>
+            <div className="muted" style={{ marginTop: 4 }}>
+              {requirement.notes || "—"}
+            </div>
+          </div>
+
+          <div>
+            <strong>Created At:</strong>{" "}
+            {new Date(requirement.createdAt).toLocaleString()}
+          </div>
         </div>
       </div>
-
-      <RequirementForm
-        customers={customers}
-        brands={brands}
-        models={models}
-        references={references}
-        action={action}
-        defaultValues={{
-          customerId: requirement.customerId,
-          brandId: requirement.brandId,
-          modelId: requirement.modelId,
-          watchReferenceId: requirement.watchReferenceId,
-          priorityRank: requirement.priorityRank,
-          notes: requirement.notes,
-        }}
-      />
-    </div>
+    </DashboardShell>
   );
 }

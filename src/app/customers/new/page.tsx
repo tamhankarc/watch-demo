@@ -15,8 +15,11 @@ export default async function NewCustomerPage() {
 
   return (
     <DashboardShell user={session} title="New Customer">
-      <div className="max-w-4xl space-y-6">
-        <h1 className="text-2xl font-semibold">New Customer</h1>
+      <div className="container">
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ marginBottom: 8 }}>New Customer</h1>
+          <p className="muted">Create a new customer profile for sales tracking.</p>
+        </div>
 
         <CustomerForm
           salesExecutives={salesExecutives}

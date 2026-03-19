@@ -21,7 +21,7 @@ type DefaultValues = {
 
 type Props = {
   salesExecutives: SalesExecutive[];
-  action: (formData: FormData) => void;
+  action: (formData: FormData) => void | Promise<void>;
   defaultValues?: DefaultValues;
 };
 
@@ -31,50 +31,138 @@ export default function CustomerForm({
   defaultValues,
 }: Props) {
   return (
-    <form action={action} className="space-y-5 rounded-xl border bg-white p-6">
-      <div className="grid gap-5 md:grid-cols-2">
-        <input name="firstName" required defaultValue={defaultValues?.firstName ?? ""} className="rounded-md border px-3 py-2" placeholder="First name" />
-        <input name="lastName" required defaultValue={defaultValues?.lastName ?? ""} className="rounded-md border px-3 py-2" placeholder="Last name" />
-        <input name="email" defaultValue={defaultValues?.email ?? ""} className="rounded-md border px-3 py-2" placeholder="Email" />
-        <input name="phone" defaultValue={defaultValues?.phone ?? ""} className="rounded-md border px-3 py-2" placeholder="Phone" />
-        <input name="city" defaultValue={defaultValues?.city ?? ""} className="rounded-md border px-3 py-2" placeholder="City" />
-        <input name="state" defaultValue={defaultValues?.state ?? ""} className="rounded-md border px-3 py-2" placeholder="State" />
-        <input name="country" defaultValue={defaultValues?.country ?? ""} className="rounded-md border px-3 py-2" placeholder="Country" />
-        <select
-          name="salesExecutiveId"
-          required
-          defaultValue={defaultValues?.salesExecutiveId ?? ""}
-          className="rounded-md border px-3 py-2"
-        >
-          <option value="">Select Sales Executive</option>
-          {salesExecutives.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.firstName} {user.lastName}
-            </option>
-          ))}
-        </select>
+    <form action={action} className="card form">
+      <div>
+        <h2 style={{ margin: 0 }}>Customer Details</h2>
+        <p className="muted" style={{ marginTop: 8 }}>
+          Add a new customer and assign a sales executive.
+        </p>
       </div>
 
-      <textarea
-        name="remarks"
-        rows={4}
-        defaultValue={defaultValues?.remarks ?? ""}
-        className="w-full rounded-md border px-3 py-2"
-        placeholder="Remarks"
-      />
+      <div className="grid grid-2">
+        <label className="label">
+          <span>First name</span>
+          <input
+            name="firstName"
+            required
+            defaultValue={defaultValues?.firstName ?? ""}
+            placeholder="Enter first name"
+            className="input"
+          />
+        </label>
 
-      <label className="flex items-center gap-2 text-sm">
+        <label className="label">
+          <span>Last name</span>
+          <input
+            name="lastName"
+            required
+            defaultValue={defaultValues?.lastName ?? ""}
+            placeholder="Enter last name"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>Email</span>
+          <input
+            name="email"
+            type="email"
+            defaultValue={defaultValues?.email ?? ""}
+            placeholder="customer@example.com"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>Phone</span>
+          <input
+            name="phone"
+            defaultValue={defaultValues?.phone ?? ""}
+            placeholder="Enter phone number"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>City</span>
+          <input
+            name="city"
+            defaultValue={defaultValues?.city ?? ""}
+            placeholder="Enter city"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>State</span>
+          <input
+            name="state"
+            defaultValue={defaultValues?.state ?? ""}
+            placeholder="Enter state"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>Country</span>
+          <input
+            name="country"
+            defaultValue={defaultValues?.country ?? ""}
+            placeholder="Enter country"
+            className="input"
+          />
+        </label>
+
+        <label className="label">
+          <span>Sales executive</span>
+          <select
+            name="salesExecutiveId"
+            required
+            defaultValue={defaultValues?.salesExecutiveId ?? ""}
+            className="select"
+          >
+            <option value="">Select sales executive</option>
+            {salesExecutives.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.firstName} {user.lastName}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <label className="label">
+        <span>Remarks</span>
+        <textarea
+          name="remarks"
+          rows={4}
+          defaultValue={defaultValues?.remarks ?? ""}
+          placeholder="Add notes about the customer"
+          className="textarea"
+        />
+      </label>
+
+      <label
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
         <input
           type="checkbox"
           name="isActive"
+          value="true"
           defaultChecked={defaultValues?.isActive ?? true}
         />
-        Active
+        <span>Active customer</span>
       </label>
 
-      <button type="submit" className="rounded-md bg-black px-4 py-2 text-sm text-white">
-        Save Customer
-      </button>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button type="submit" className="button">
+          Save Customer
+        </button>
+      </div>
     </form>
   );
 }
